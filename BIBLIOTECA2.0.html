@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5; /* Fundo mais claro */
+            text-align: center;
+        }
+        header {
+            background-color: #333; /* Fundo do cabeçalho mais escuro */
+            color: #fff;
+            padding: 20px 0;
+        }
+        h1 {
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        footer {
+            background-color: #333; /* Fundo do rodapé mais escuro */
+            color: #fff;
+            padding: 10px 0;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #666; /* Cor de fundo mais escura para cabeçalhos */
+            color: #fff;
+        }
+        input[type="text"], select {
+            padding: 12px;
+            margin-bottom: 10px;
+            width: calc(100% - 24px);
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #666; /* Cor de fundo mais escura para botões */
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #555; /* Cor de fundo mais escura quando hover */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Biblioteca</h1>
+    </header>
+    <main>
+        <h2>Catalogar Novo Livro</h2>
+        <form id="bookForm">
+            <input type="text" id="titleInput" placeholder="Título">
+            <input type="text" id="authorInput" placeholder="Autor">
+            <input type="text" id="yearInput" placeholder="Ano de Publicação">
+            <select id="genreInput">
+                <option value="">Selecione o Gênero</option>
+                <option value="Fantasia">Fantasia</option>
+                <option value="Ficção Literária">Ficção Literária</option>
+                <option value="Ficção Distópica">Ficção Distópica</option>
+                <option value="Outro">Outro</option>
+            </select>
+            <input type="text" id="otherGenreInput" placeholder="Digite o Gênero" style="display: none;">
+            <button type="submit">Adicionar Livro</button>
+        </form>
+        <h2>Procurar Livro</h2>
+        <input type="text" id="searchInput" placeholder="Digite para procurar um livro...">
+        <h2>Meus Livros</h2>
+        <table id="bookTable">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Ano de Publicação</th>
+                    <th>Gênero</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>O Senhor dos Anéis</td>
+                    <td>J.R.R. Tolkien</td>
+                    <td>1954</td>
+                    <td>Fantasia</td>
+                    <td>Disponível</td>
+                    <td><button class="toggleStatusButton">Alugar</button> <button class="deleteButton">Excluir</button></td>
+                </tr>
+                <tr>
+                    <td>Cem Anos de Solidão</td>
+                    <td>Gabriel García Márquez</td>
+                    <td>1967</td>
+                    <td>Ficção Literária</td>
+                    <td>Alugado</td>
+                    <td><button class="toggleStatusButton">Devolver</button> <button class="deleteButton">Excluir</button></td>
+                </tr>
+                <tr>
+                    <td>1984</td>
+                    <td>George Orwell</td>
+                    <td>1949</td>
+                    <td>Ficção Distópica</td>
+                    <td>Disponível</td>
+                    <td><button class="toggleStatusButton">Alugar</button> <button class="deleteButton">Excluir</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <!-- Rodapé removido -->
+    </footer>
+    <script>
+        const bookForm = document.getElementById('bookForm');
+        const bookTable = document.getElementById('bookTable');
+        const searchInput = document.getElementById('searchInput');
+        const rows = bookTable.getElementsByTagName('tr');
+
+        const genreInput = document.getElementById('genreInput');
+        const otherGenreInput = document.getElementById('otherGenreInput');
+
+        // Adiciona ou remove o campo de texto do gênero "Outro" conforme necessário
+        genreInput.addEventListener('change', function() {
+            if (genreInput.value === 'Outro') {
+                otherGenreInput.style.display = 'block';
+            } else {
+                otherGenreInput.style.display = 'none';
+            }
+        });
+
+        bookForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('titleInput').value;
+            const author = document.getElementById('authorInput').value;
+            const year = document.getElementById('yearInput').value;
+            const genre = genreInput.value === 'Outro' ? otherGenreInput.value : genreInput.value;
+
+            if (title && author && year && genre) {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${title}</td>
+                    <td>${author}</td>
+                    <td>${year}</td>
+                    <td>${genre}</td>
+                    <td>Disponível</td>
+                    <td><button class="toggleStatusButton">Alugar</button> <button class="deleteButton">Excluir</button></td>
+                `;
+                bookTable.querySelector('tbody').appendChild(newRow);
+
+                // Limpar o formulário após adicionar o livro
+                bookForm.reset();
+            } else {
+                alert('Por favor, preencha todos os campos.');
+            }
+        });
+
+        searchInput.addEventListener('keyup', function() {
+            const filter = searchInput.value.toUpperCase();
+
+            for (let i = 1; i < rows.length; i++) {
+                const title = rows[i].getElementsByTagName('td')[0];
+                if (title) {
+                    const txtValue = title.textContent || title.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        });
+
+        bookTable.addEventListener('click', function(event) {
+            if (event.target.classList.contains('toggleStatusButton')) {
+                const row = event.target.closest('tr');
+                const statusCell = row.querySelector('td:nth-child(5)');
+                const currentStatus = statusCell.textContent;
+                if (currentStatus === 'Disponível') {
+                    statusCell.textContent = 'Alugado';
+                    event.target.textContent = 'Devolver';
+                } else {
+                    statusCell.textContent = 'Disponível';
+                    event.target.textContent = 'Alugar';
+                }
+            } else if (event.target.classList.contains('deleteButton')) {
+                const confirmation = confirm('Deseja excluir o livro?');
+                if (confirmation) {
+                    const row = event.target.closest('tr');
+                    row.remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
